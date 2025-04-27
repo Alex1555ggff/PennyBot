@@ -64,13 +64,12 @@ services:
       - ./bot:/app/bot
 
     environment:
-        - ADMIN_IDS=[1246132955]
+        - ADMIN_IDS=${ADMIN_IDS}
         - BOT_TOKEN=${BOT_TOKEN}
         - DB_URL=${DB_URL}
         - STORE_URL=${STORE_URL}
         - REDIS_URL=redis://default:${REDIS_PASSWORD}@redis:6379
         - RABBITMQ_URL=amqp://${RABBITMQ_USERNAME}:${RABBITMQ_PASSWORD}@rabbitmq:5672/
-        - BASE_URL=https://938f-2a0c-16c0-515-8f0-00-986d.ngrok-free.app
         - TZ=Europe/Moscow
 
     depends_on:
@@ -81,6 +80,19 @@ services:
       - custom
 
 
+  ngrok:
+    image: wernight/ngrok
+    restart: unless-stopped
+    command: http 80
+    ports:
+      - "4040:4040"  # Для доступа к панели ngrok
+    environment:
+      - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
+    depends_on:
+      - web
+    networks:
+      - custom
+ 
 networks:
   custom:
     driver: bridge

@@ -1,4 +1,5 @@
 import os
+import requests
 from typing import List
 from urllib.parse import quote
 from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
@@ -17,8 +18,21 @@ class Settings(BaseSettings):
     FORMAT_LOG: str = "{time:YYYY-MM-DD at HH:mm:ss} | {level} | {message}"
 
     REDIS_URL: str
-    BASE_URL: str
     RABBITMQ_URL: str
+
+
+    @property
+    def BASE_URL(self) -> str:
+        try:
+            resp = requests.get("http://ngrok:4040/api/tunnels")
+            tunnels = resp.json()["tunnels"]
+            for tunnel in tunnels:
+                if tunnel["proto"] == "https":
+                    return tunnel["public_url"]
+        except Exception as e:
+            logger.error("Ошибка получения ngrok URL:", e)
+        return None
+
 
     @property
     def hook_url(self) -> str:
