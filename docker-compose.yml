@@ -81,17 +81,19 @@ services:
 
 
   ngrok:
-    image: wernight/ngrok
+    image: ngrok/ngrok:latest
     restart: unless-stopped
-    command: http 80
+    volumes:
+      - ./ngrok.yml:/etc/ngrok.yml
+    command: start --all --config /etc/ngrok.yml
+    
     ports:
-      - "4040:4040"  # Для доступа к панели ngrok
-    environment:
-      - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
+      - "4040:4040" # Панель управления ngrok
     depends_on:
       - web
     networks:
       - custom
+
  
 networks:
   custom:

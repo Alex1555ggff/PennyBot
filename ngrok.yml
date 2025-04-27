@@ -1,0 +1,6 @@
+authtoken: ${NGROK_AUTHTOKEN}
+
+tunnels:
+  fastapi:
+    proto: http
+    addr: 80

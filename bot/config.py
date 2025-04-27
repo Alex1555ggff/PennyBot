@@ -30,7 +30,7 @@ class Settings(BaseSettings):
                 if tunnel["proto"] == "https":
                     return tunnel["public_url"]
         except Exception as e:
-            logger.error("Ошибка получения ngrok URL:", e)
+            logger.error(f"Ошибка получения ngrok URL: {e}")
         return None
 
 
