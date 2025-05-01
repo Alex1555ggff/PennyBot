@@ -7,7 +7,7 @@ from bot.user.schemas import STransactions, SUser
 from bot.user.kbs import main_user_kb
 from bot.user.dao import UserDAO, TransactionsDAO
 from bot.dao.models import CatEnum
-from bot.user.state import AddTransactionsState
+from bot.user.state import AddTransactionsState, DeleteTransactionsState
 from bot.config import broker
 
 
@@ -67,3 +67,17 @@ async def on_confirm(callback: CallbackQuery, button: Button, dialog_manager: Di
     await dialog_manager.done()
     
         
+async def process_date_selected(callback: CallbackQuery, widget, dialog_manager: DialogManager, selected_date: date):
+    """Обработчик выбора даты."""
+    dialog_manager.dialog_data["date"] = selected_date
+    dialog_manager.dialog_data["user_id"] = callback.from_user.id
+    await dialog_manager.switch_to(DeleteTransactionsState.select_trans)
+
+
+async def process_transaction_selected(callback: CallbackQuery, widget, dialog_manager: DialogManager, item_id: str):
+    session = dialog_manager.middleware_data.get("session_with_commit")
+    trans_id = int(item_id)
+
+    await callback.answer("Приступаю к сохранению")
+
+    transactions = await TransactionsDAO(session).delete_one_by_id(trans_id)

@@ -1,4 +1,7 @@
 from aiogram_dialog import DialogManager
+from bot.user.dao import  TransactionsDAO
+from datetime import date
+from loguru import logger
 import datetime
 
 
@@ -19,3 +22,17 @@ async def get_confirmed_data(dialog_manager: DialogManager, **kwargs):
     )
 
     return {"confirmed_text": confirmed_text}
+
+
+async def get_transactions(dialog_manager: DialogManager, **kwargs):
+    data: date = dialog_manager.dialog_data["date"]
+    user_id = dialog_manager.dialog_data["user_id"]
+    session = dialog_manager.middleware_data.get("session_with_commit")
+
+    transactions = await TransactionsDAO(session).transactions_to_data(data, user_id)
+
+    trans_list = [transaction.to_dict() for transaction in transactions]
+
+    return {
+            "trans_list": trans_list,
+        }

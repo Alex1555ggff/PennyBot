@@ -6,3 +6,8 @@ class AddTransactionsState(StatesGroup):
     price = State()
     descriptions = State()
     success = State()
+
+
+class DeleteTransactionsState(StatesGroup):
+    select_date = State()
+    select_trans = State()

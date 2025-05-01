@@ -1,13 +1,15 @@
 from aiogram_dialog import Dialog
-from bot.user.windows import (get_category_window,
-                              get_description_window,
-                              get_price_window,
-                              get_confirmed_window)
+from bot.user.windows import CreateTransWindows
 
 
 add_transactions_dialog = Dialog(
-    get_category_window(),
-    get_price_window(),
-    get_description_window(),
-    get_confirmed_window(),
+    CreateTransWindows.get_category_window(),
+    CreateTransWindows.get_price_window(),
+    CreateTransWindows.get_description_window(),
+    CreateTransWindows.get_confirmed_window(),
+)
+
+
+delete_transactions_dialog = Dialog(
+    
 )

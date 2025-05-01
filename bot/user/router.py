@@ -42,3 +42,9 @@ async def create_transactions(call: CallbackQuery, dialog_manager: DialogManager
 async def check_transactions(call: CallbackQuery, dialog_manager: DialogManager):
     await call.answer('Просмотр трат')
     await dialog_manager.start(state=GetTransactionsState.select_method, mode=StartMode.RESET_STACK)
+
+
+@router.callback_query(F.data == "delete_trn")
+async def delete_transactions(call: CallbackQuery, dialog_manager: DialogManager):
+    await call.answer('Добавление записи')
+    await dialog_manager.start(state=AddTransactionsState.category, mode=StartMode.RESET_STACK)

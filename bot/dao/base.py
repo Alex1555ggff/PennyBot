@@ -21,7 +21,6 @@ class BaseDAO(Generic[T]):
 
     async def find_one_or_none_by_id(self, data_id: int):
         try:
-            logger.info(f"Session: {self._session}")
             query = select(self.model).filter_by(id=data_id)
             result = await self._session.execute(query)
             record = result.scalar_one_or_none()
@@ -30,4 +29,18 @@ class BaseDAO(Generic[T]):
             return record
         except SQLAlchemyError as e:
             logger.error(f"Ошибка при поиске записи с ID {data_id}: {e}")
+            raise
+
+
+    async def delete_one_by_id(self, data_id: int):
+        try:
+            query = sqlalchemy_delete(self.model).filter_by(id=data_id)
+            result = await self._session.execute(query)
+            record = result.scalar_one_or_none()
+            log_message = f"Запись {self.model.__name__} с ID {data_id} {'удалена' if record else 'не найдена'}."
+            logger.info(log_message)
+            return record
+        
+        except SQLAlchemyError as e:
+            logger.error(f"Ошибка при удалении записи с ID {data_id}: {e}")
             raise
